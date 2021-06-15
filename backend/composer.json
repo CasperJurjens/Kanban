@@ -1,0 +1,16 @@
+{
+    "name": "frontendfirst/todo",
+    "type": "application",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Auke van Slooten",
+            "email": "auke@muze.nl"
+        }
+    ],
+    "require": {
+        "php": ">=7",
+        "arc/store": ">=3.2",
+        "arc/web": "dev-master"
+    }
+}

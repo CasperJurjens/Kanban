@@ -1,0 +1,58 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: "traefik:v2.4"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      #- "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  backend:
+    image: "webdevops/php-apache:7.4"
+    container_name: "backend"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`backend.local`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+    environment:
+      arc-rest-store: "pgsql:host=postgres;port=5432;dbname=arcstore;user=postgres;password=postgres"
+    volumes:
+      - ./backend/www:/app
+      - ./backend/vendor:/vendor
+      - ./backend/src:/src 
+      - ./backend/config:/config
+    depends_on:
+      - postgres
+
+  todo:
+    image: "httpd:2.4"
+    container_name: "todo"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.todo.rule=Host(`todo.local`)"
+      - "traefik.http.routers.todo.entrypoints=web"
+    volumes:
+      - ./frontend/www:/usr/local/apache2/htdocs/
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - 5432
+    volumes:
+      - ./backend/postgres:/docker-entrypoint-initdb.d
+      
+volumes:
+  www:      
+    

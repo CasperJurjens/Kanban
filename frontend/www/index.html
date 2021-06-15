@@ -1,0 +1,381 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        input.toggle:checked ~ div.view label {
+            color: #d9d9d9;
+            text-decoration: line-through;
+        }
+        li.slip-reordering {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+            background-color: white;
+        }
+        body {
+            /*font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+            font-family: f-barlow, sans-serif;
+            
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        .kanbanapp {
+            display: block;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .main {
+            height:fit-content;
+        }
+        .header {
+            background-color: #DDE1E5;
+            text-align: center;
+        }
+        .lists {
+            /*background-color: green;*/
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            list-style: none;
+        }
+        .list {
+            list-style: none;
+            background-color: #DDE1E5;
+            padding: 4px;
+            margin: 10px;
+            border-radius: 1%;
+            top: 0px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .item {
+            background-color: white;
+            box-shadow: 1px 2px 10px #888888;
+            margin: 6px;
+            list-style: none;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slipjs/2.0.0/slip.min.js"></script> <!-- Wat doet dit precies?? -->
+</head>
+<body>
+    <section class="kanbanApp">
+        <div>
+            <header class="header">
+                <h1> ello senior, how are u do? </h1>
+                <!--toevoeg/verwijder/undo icoontjes verschijnen wnr hover-->
+                <div class="menucontent">
+                    <button class="dellist" data-simply-command=""> del list </button>
+                    <button class="movelist" data-simply-command=""> move list </button>
+                    <button class="additem" data-simply-command=""> add list </button>
+                </div>
+            </header>
+
+
+            <section class="main">
+            <ul class="lists" data-simply-list="kanban">
+                <template>
+                    <li class="list">
+                        <div class="head">
+                            <div class="text" data-simply-field="listtitle">List Title</div>
+                            <div class="menu">
+                                <a href="#" class="teaser">≡</a>
+                                <div class="menucontent">
+                                    <button class="dellist" data-simply-command=""> del list </button>
+                                    <button class="movelist" data-simply-command=""> move list </button>
+                                    <button class="additem" data-simply-command=""> add note </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <ul class="items" data-simply-list="items">
+                            <template>
+                                <li class="item">
+                                    <div class="menu">
+                                        <a href="#" class="teaser">≡</a>
+                                        <div class="menucontent">
+                                            <button class="dellist" data-simply-command=""> del item </button>
+                                            <button class="movelist" data-simply-command=""> raw </button>
+                                            <button class="colitem" data-simply-command=""> collapse </button>
+                                        </div>
+                                    </div>
+                                    <div data-simply-field="title">
+                                        title
+                                    </div>
+                                    <div class="text" data-simply-field="description">
+                                        Description
+                                    </div>
+                                    <textarea class="edit"> </textarea>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+            </section>
+        </div>
+    </section>
+    
+    <!--
+    <section class="kanbanapp">
+        <div>
+            <header class="header">
+                <h1>kanbans</h1>
+                <form id="form" data-simply-command="addkanban">
+                    <input class="new-kanban" type="text" name="newItem" placeholder="What needs to be done?">
+                </form>
+            </header>
+            <section class="main">
+                <ul class="kanban-list" data-simply-list="kanban">                                                  Hier herkent ie de view.kanban 
+                    <template>
+                        <li>
+                            <span data-simply-field="data.order">0</span>
+                            <input class="pathInput" data-simply-field="path" type="hidden" />
+                            <input type="checkbox" class="toggle" data-simply-field="completed" value="1">
+                            <div class="view">
+                                <label data-simply-field="data.item">Item</label>
+                                <button class="edit" data-simply-command="editkanban"></button>
+                                <button class="destroy" data-simply-command="delkanban"></button>
+                            </div>
+                            <input class="edit" data-simply-field="data.item" type="text">                  data-simply-command="showkanban" 
+                        </li>
+                    </template>
+                </ul>
+            </section>
+            <footer class="footer">
+                <span class="kanban-count" data-simply-field="count" data-simply-content="template" data-simply-default-template="other">
+                    Nothing left kanban!                                                                                                      Dit doet het niet tijdens eerste keer laden v pagina
+                    <template data-simply-template="0">Nothing left kanban!</template>
+                    <template data-simply-template="1"><strong>1</strong> item left</template>
+                    <template data-simply-template="other"><strong data-simply-field="count">n</strong> items left</template>
+                </span>
+            </footer>
+        </div>
+    </section>
+-->
+
+
+
+
+    <!-- Behouden -->
+    <p class="refer-back">This example is part of <a href="https://simplyedit.io/examples/" target="_blank">simplyedit.io/examples/</a>
+    <script src="https://unpkg.com/simplyview@2.0.1/dist/simply.everything.js"></script>
+    <script src="https://cdn.simplyedit.io/1/simply-edit.js"></script>
+    <!--          -->
+    
+
+    <script>
+        /*
+        const api = simply.api.proxy({
+            baseURL:'http://backend.local/',
+            paramsFormat:'json',
+            responseFormat:'json',
+            mode:'cors',
+            verbs: ['get','post','put','patch','delete']
+        });
+        */
+        
+        /*
+        //Zorg dat het in juiste volgorde opgevraagd / afgebeeld word 
+        api.get().then(function (node) {
+            kanbanApp.view.kanban = Object.values(node.nodes);
+            kanbanApp.view.kanban.sort(function (a, b) {
+                return a.data.order - b.data.order;
+            });
+            console.log(Object.values(node.nodes));
+        });
+        */
+        
+
+
+           
+        var kanbanApp = simply.app({
+
+            commands: { 
+            /*
+                addkanban: function (form, values) {
+                    //Geef hoogste volgorde waarde
+
+                    if (values.newItem.trim()) {
+                        var orderNum = 1;
+                        if (kanbanApp.view.count != null) {
+                            orderNum = kanbanApp.view.count + 1;
+                        } else {
+                            orderNum = 1;
+                        }
+
+                        var kanbanItem = {
+                            item: values.newItem.trim(),
+                            completed: 0,
+                            order: orderNum
+                        };
+                        var path;
+                        api.post(kanbanItem).then(function (response) {
+                            console.log(response);
+                            path = response.replace('/', '');
+                            return api[path].get();
+                        })
+                            .then(function (response) { console.log(response); kanbanApp.view.kanban.push(response.node); console.log(kanbanApp.view.kanban);});
+                    }
+                    form.newItem.value = '';
+
+                },
+                delkanban: function (el, value) {
+                    var delPathUncut = el.closest('li').querySelector('.pathInput').value;
+                    var delPath = delPathUncut.replace('/', '');
+                    api[delPath].delete().then(function (response) { console.log(response); });
+
+                    el.closest('li').remove();
+                    console.log('volgende log is view.kanban: ');
+                    console.log(kanbanApp.view.kanban);
+                    if (kanbanApp.view.kanban.length != 0) {
+                        kanbanApp.view.kanban.forEach(function (item, index) {
+                                item.data.order = index + 1;
+                                api[item.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
+                                
+                            }
+                        )
+                    }
+                },
+                editkanban: function (ele, value) {
+                    var itemLiPre = ele.closest('li');
+                    var input = itemLiPre.querySelector('input[type="text"]');
+
+                    itemLiPre.classList.add('editing');
+                    input.focus();
+                    
+                    input.addEventListener('blur', function () {
+                        input.removeEventListener('keyup', keyEscape);
+                        kanbanApp.commands.call('showkanban', input, itemLiPre);
+                    }, { once: true });
+                    
+                    var keyEscape = function(evt) {
+                        if (["Escape","Cancel"].indexOf(evt.key)!=-1) {
+                            input.value = itemLiPre.querySelector('label[data-simply-field="data.item"]').innerHTML;
+                        }
+                        if (["Escape","Cancel","Enter"].indexOf(evt.key)!=-1) {
+                            kanbanApp.commands.call('showkanban', input, itemLiPre);
+                        }
+                    };
+                    input.addEventListener('keyup', keyEscape);
+                },
+                showkanban: function(elem, itemLi, value) {
+                    elem.closest('li').classList.remove('editing');
+                    elem.blur();
+                    
+                    console.log('itemLi = ' + itemLi);
+                    var patchPathUncut = itemLi.querySelector('.pathInput').value;                   //Krijg hier een error, maar het werkt wel...
+                    var patchPath = patchPathUncut.replace('/', '');
+                    var patchItem = {
+                        item: elem.value,
+                        completed: 0
+                    };
+                    api[patchPath].patch(patchItem).then(function (response) { console.log('patch response: ' + response); }); //Test database update
+                }
+                */
+            },
+            view: {
+                kanban: [
+                {
+                    listtitle: 'Todo',
+                    items: [
+                        {
+                            title: 'Een todo item',
+                            description: 'Een langere omschrijving'
+                        },
+                        {
+                            title: 'Nog een todo item',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                },
+                {
+                    listtitle: 'Doing',
+                    items: [
+                        {
+                            title: 'Een todo item waar aan gewerkt wordt',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                }                   
+                ]
+            }
+            
+        });
+        /*
+        kanbanApp.view.kanban = [
+            {
+                listtitle: 'Todo',
+                items: [
+                    {
+                        title: 'Een todo item',
+                        description: 'Een langere omschrijving'
+                    },
+                    {
+                        title: 'Nog een todo item',
+                        description: 'Een langere omschrijving'
+                    }
+                ]
+            },
+            {
+                listtitle: 'Doing',
+                items: [
+                    {
+                        title: 'Een todo item waar aan gewerkt wordt',
+                        description: 'Een langere omschrijving'
+                    }
+                ]
+            }
+        ];
+        */
+        
+
+
+        /*
+        // 3: update the counter whenever the list changes
+        document.addEventListener('simply-data-changed', function(evt) {
+            if (evt.data.arguments[0] == 'kanban') {
+                if (kanbanApp.view.kanban.length != null) {
+                    kanbanApp.view.count = kanbanApp.view.kanban.length;
+                } else {
+                    kanbanApp.view.count = 0;
+                }
+            }
+        });
+
+        // 6: drag and drop items to reorder them
+        var kanbanList = document.querySelector('ul.kanban-list');
+        
+        kanbanList.addEventListener('slip:reorder', function (e) {
+            e.target.parentNode.insertBefore(e.target, e.detail.insertBefore);
+            
+            if (kanbanApp.view.kanban.length != 0) {
+                kanbanApp.view.kanban.forEach(function (item, index) {
+                    api[item.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
+                    item.data.order = index + 1;
+                }
+                )
+            }
+            
+            console.log(kanbanApp.view.kanban);
+        });
+
+        // 7: swipe to remove an item
+        kanbanList.addEventListener('slip:swipe', function(e) {
+            var delItem = e.target;
+            //delItem.parentNode.removeChild(delItem);      //Eerst parent en dan weer child is toch onnodige extra stap?
+            delItem.remove();
+            var delPathUncut = delItem.closest('li').querySelector('.pathInput').value;
+            var delPath = delPathUncut.replace('/', '');
+            api[delPath].delete().then(function (response) { console.log(response); });
+        });
+
+        new Slip(kanbanList);
+        */
+
+    </script>
+</body>
+</html>
