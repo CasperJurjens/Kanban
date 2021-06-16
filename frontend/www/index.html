@@ -21,29 +21,40 @@
             text-decoration: none;
             color: black;
         }
+        button {
+            text-decoration: none;
+            border: none;
+            
+        }
         .kanbanapp {
             display: block;
+            /*
             width: 80%;
             margin-left: auto;
             margin-right: auto;
+            */
         }
         .main {
             height:fit-content;
         }
         .header {
-            background-color: #DDE1E5;
+            background-color: #EAEDF0;
             text-align: center;
         }
         .lists {
             /*background-color: green;*/
             width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            
+            margin-left: auto;      /*zorgt dat het in het*/
+            margin-right: auto;     /*midden blijft*/
+            
             list-style: none;
+            white-space: nowrap;
         }
         .list {
+            position: relative;
             list-style: none;
-            background-color: #DDE1E5;
+            background-color: #EAEDF0;
             padding: 4px;
             margin: 10px;
             border-radius: 1%;
@@ -51,11 +62,49 @@
             display: inline-block;
             vertical-align: top;
         }
+        .items {
+            float: left;
+        }
         .item {
+            position: relative;
             background-color: white;
             box-shadow: 1px 2px 10px #888888;
             margin: 6px;
             list-style: none;
+        }
+        .text {
+            min-height: 20px;
+            white-space: pre;
+            overflow: hidden;
+        }
+        .listmenu {
+            position: absolute;
+            display: block;
+            top: 0;
+            right: 0;
+            height: 20px;
+            padding: 5px 6px 7px 30px;
+            background: linear-gradient(to right, #EAEDF000, #EAEDF0 10px);
+            
+        }
+        .teaser {
+            /*float: right;*/
+            
+        }
+        .menucontent {
+            display: none;
+            /*position: absolute;*/
+            z-index: 1;
+
+        }
+        
+        .menu:hover .menucontent{
+            display: inline-block;
+
+        }
+        .menu:hover .teaser{
+            display: none;
+            
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slipjs/2.0.0/slip.min.js"></script> <!-- Wat doet dit precies?? -->
@@ -66,10 +115,13 @@
             <header class="header">
                 <h1> ello senior, how are u do? </h1>
                 <!--toevoeg/verwijder/undo icoontjes verschijnen wnr hover-->
-                <div class="menucontent">
-                    <button class="dellist" data-simply-command=""> del list </button>
-                    <button class="movelist" data-simply-command=""> move list </button>
-                    <button class="additem" data-simply-command=""> add list </button>
+                <div class="menu">
+                    <a href="#" class="teaser">≡</a>
+                    <div class="menucontent">
+                        <button class="dellist" data-simply-command=""> del list </button>
+                        <button class="movelist" data-simply-command=""> move list </button>
+                        <button class="additem" data-simply-command=""> add list </button>
+                    </div>
                 </div>
             </header>
 
@@ -79,8 +131,8 @@
                 <template>
                     <li class="list">
                         <div class="head">
-                            <div class="text" data-simply-field="listtitle">List Title</div>
-                            <div class="menu">
+                            <span class="text" data-simply-field="listtitle">List Title</span>
+                            <div class="listmenu">
                                 <a href="#" class="teaser">≡</a>
                                 <div class="menucontent">
                                     <button class="dellist" data-simply-command=""> del list </button>
@@ -94,7 +146,7 @@
                         <ul class="items" data-simply-list="items">
                             <template>
                                 <li class="item">
-                                    <div class="menu">
+                                    <div class="itemmenu">
                                         <a href="#" class="teaser">≡</a>
                                         <div class="menucontent">
                                             <button class="dellist" data-simply-command=""> del item </button>
@@ -280,7 +332,7 @@
             view: {
                 kanban: [
                 {
-                    listtitle: 'Todo',
+                    listtitle: 'Todo en een hele lange titel test test test test test test test',
                     items: [
                         {
                             title: 'Een todo item',
