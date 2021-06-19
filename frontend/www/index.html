@@ -2,8 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="/css/base.css">
+    <!--<link rel="stylesheet" href="/css/base.css">-->
     <style>
+        /*
         input.toggle:checked ~ div.view label {
             color: #d9d9d9;
             text-decoration: line-through;
@@ -12,10 +13,37 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.45);
             background-color: white;
         }
+        */
+        html {
+            /*font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/ /* normaal*/
+            /*font-family: f-barlow, sans-serif;*/ /*normaal*/
+            font-family: "apercu",sans-serif;
+            font-size: 12px;
+            color: #37392E; /*#C5C6C7*/
+            height: 100%;
+            width: 100%;
+        }
+        /*
         body {
-            /*font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-            font-family: f-barlow, sans-serif;
+            background: #f8f9fb;
+        }
+        */
+        body {
+            /*background-color: #0B0C10;*/
+            background-color: #add869;
             
+            /*background: rgb(11,12,16);*/
+            /*background: linear-gradient(356deg, #EEE5E5 0%, #ad9f9e 55%);*/
+            /*background: linear-gradient(356deg, rgb(146, 145, 184) 10%,  #cfbbb9 40%);*/
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        h1 {
+            
+            text-decoration: none;
+            margin:5px;
+            font-size: 13px;
+            font-weight:550;
         }
         a {
             text-decoration: none;
@@ -24,87 +52,126 @@
         button {
             text-decoration: none;
             border: none;
-            
         }
-        .kanbanapp {
+        .kanbanApp {
+            position: relative;
             display: block;
-            /*
-            width: 80%;
             margin-left: auto;
             margin-right: auto;
-            */
+            height: fit-content;
         }
-        .main {
-            height:fit-content;
+        .headercontainer {
+            position: fixed;
+            padding: 5px;
+            margin: 0;
+            margin-bottom: 40px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(99, 99, 99, 0.466);
         }
         .header {
-            background-color: #EAEDF0;
-            text-align: center;
+            /*position: relative;*/
+            width: 70em;
+            top:0px;
+            /*background: #EAEDF0;*/
+            color:#37392E;
+            padding: 2px;
+            margin: auto;
+        }
+        .main  {
+            position: relative;
+            
+            top: 4em;
         }
         .lists {
+            width: 100em;
             /*background-color: green;*/
-            width: fit-content;
-            
             margin-left: auto;      /*zorgt dat het in het*/
             margin-right: auto;     /*midden blijft*/
-            
             list-style: none;
-            white-space: nowrap;
         }
         .list {
             position: relative;
             list-style: none;
-            background-color: #EAEDF0;
+            white-space: nowrap;
+            /*background-color: #EAEDF0; */ /*normaal*/
+            background-color: #fafafa5d;
+            width: 20em;
             padding: 4px;
             margin: 10px;
-            border-radius: 1%;
+            border-radius: 4%;
             top: 0px;
             display: inline-block;
             vertical-align: top;
         }
         .items {
-            float: left;
+            padding: 0;
         }
         .item {
             position: relative;
-            background-color: white;
-            box-shadow: 1px 2px 10px #888888;
+            /*background-color: white;*/
+            background-color: #EEE5E5;
+            padding: 5px;
+            box-shadow: 1px 1px 3px #5e5e5e8e;
             margin: 6px;
             list-style: none;
         }
+        .listtitle {
+            min-height: 20px;
+            overflow :hidden;
+            white-space: nowrap;
+        }
         .text {
             min-height: 20px;
-            white-space: pre;
-            overflow: hidden;
         }
-        .listmenu {
+        .menu {
             position: absolute;
             display: block;
-            top: 0;
-            right: 0;
-            height: 20px;
+
+            right: 0px;
+            top: 0px;
+            height: 15px;
+            width: fit-content;
             padding: 5px 6px 7px 30px;
-            background: linear-gradient(to right, #EAEDF000, #EAEDF0 10px);
-            
+        }
+        #listmenu.menu {
+            /*background: linear-gradient(to right, #EAEDF000, #EAEDF0 10px);*/
+            border-radius: 4px;
+            background: linear-gradient(to right, #869e5f00, #c9e49e 10px);
+           
         }
         .teaser {
-            /*float: right;*/
-            
+            position: absolute;
+            right: 3px;
+            top: 5px;
+            padding: 0 3px;
         }
         .menucontent {
             display: none;
-            /*position: absolute;*/
-            z-index: 1;
-
+            vertical-align: top;
+            z-index: -1;
         }
         
         .menu:hover .menucontent{
             display: inline-block;
-
         }
         .menu:hover .teaser{
             display: none;
-            
+        }
+        .edit {
+            display: none;
+        }
+        .refer-back {
+            position:fixed;
+            /*bottom:5em;*/
+            width: fit-content;
+            margin: 5% auto; 
+            left:0;
+            right: 0;
+        }
+        .refer-back a{
+            text-decoration:underline;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slipjs/2.0.0/slip.min.js"></script> <!-- Wat doet dit precies?? -->
@@ -112,65 +179,73 @@
 <body>
     <section class="kanbanApp">
         <div>
-            <header class="header">
-                <h1> ello senior, how are u do? </h1>
-                <!--toevoeg/verwijder/undo icoontjes verschijnen wnr hover-->
-                <div class="menu">
-                    <a href="#" class="teaser">≡</a>
-                    <div class="menucontent">
-                        <button class="dellist" data-simply-command=""> del list </button>
-                        <button class="movelist" data-simply-command=""> move list </button>
-                        <button class="additem" data-simply-command=""> add list </button>
+            <div class="headercontainer">
+                <header class="header">
+                    <h1> Welcome to KanbanBoard </h1>
+                    <!--toevoeg/verwijder/undo icoontjes verschijnen wnr hover-->
+                    <div class="menu">
+                        <a href="#" class="teaser">≡</a>
+                        <div class="menucontent">
+                            <button class="dellist" data-simply-command=""> del list </button>
+                            <button class="movelist" data-simply-command=""> move list </button>
+                            <button class="additem" data-simply-command=""> add list </button>
+                        </div>
                     </div>
-                </div>
-            </header>
-
+                </header>
+            </div>
 
             <section class="main">
-            <ul class="lists" data-simply-list="kanban">
-                <template>
-                    <li class="list">
-                        <div class="head">
-                            <span class="text" data-simply-field="listtitle">List Title</span>
-                            <div class="listmenu">
-                                <a href="#" class="teaser">≡</a>
-                                <div class="menucontent">
-                                    <button class="dellist" data-simply-command=""> del list </button>
-                                    <button class="movelist" data-simply-command=""> move list </button>
-                                    <button class="additem" data-simply-command=""> add note </button>
+                <ul class="lists" data-simply-list="kanban">
+                    <template>
+                        <li class="list">
+                            <div class="head">
+                                <h1 class="listtitle" data-simply-field="listtitle">List Title</h1>
+                                <div id="listmenu" class="menu">
+                                    <a href="#" class="teaser">≡</a>
+                                    <div id="listmenucontent" class="menucontent">
+                                        <button class="dellist" data-simply-command=""> del list </button>
+                                        <button class="movelist" data-simply-command=""> move list </button>
+                                        <button class="additem" data-simply-command=""> add note </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        
-                        <ul class="items" data-simply-list="items">
-                            <template>
-                                <li class="item">
-                                    <div class="itemmenu">
-                                        <a href="#" class="teaser">≡</a>
-                                        <div class="menucontent">
-                                            <button class="dellist" data-simply-command=""> del item </button>
-                                            <button class="movelist" data-simply-command=""> raw </button>
-                                            <button class="colitem" data-simply-command=""> collapse </button>
+                            
+                            
+                            <ul class="items" data-simply-list="items">
+                                <template>
+                                    <li class="item">
+                                        <div id="itemmenu" class="menu">
+                                            <a href="#" class="teaser">≡</a>
+                                            <div id="itemmenucontent" class="menucontent">
+                                                <button class="dellist" data-simply-command=""> del item </button>
+                                                <button class="movelist" data-simply-command=""> raw </button>
+                                                <button class="colitem" data-simply-command=""> collapse </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div data-simply-field="title">
-                                        title
-                                    </div>
-                                    <div class="text" data-simply-field="description">
-                                        Description
-                                    </div>
-                                    <textarea class="edit"> </textarea>
-                                </li>
-                            </template>
-                        </ul>
-                    </li>
-                </template>
-            </ul>
+                                        <div data-simply-field="title">
+                                            title
+                                        </div>
+                                        <div class="text" data-simply-field="description">
+                                            Description
+                                        </div>
+                                        <textarea class="edit"> </textarea>
+                                    </li>
+                                </template>
+                            </ul>
+                        </li>
+                    </template>
+                </ul>
             </section>
+            <p class="refer-back">This example is part of <a href="https://simplyedit.io/examples/" target="_blank">simplyedit.io/examples/</a>
         </div>
     </section>
     
+
+
+
+
+
+
     <!--
     <section class="kanbanapp">
         <div>
@@ -213,14 +288,14 @@
 
 
     <!-- Behouden -->
-    <p class="refer-back">This example is part of <a href="https://simplyedit.io/examples/" target="_blank">simplyedit.io/examples/</a>
+    
     <script src="https://unpkg.com/simplyview@2.0.1/dist/simply.everything.js"></script>
     <script src="https://cdn.simplyedit.io/1/simply-edit.js"></script>
     <!--          -->
     
 
     <script>
-        /*
+        
         const api = simply.api.proxy({
             baseURL:'http://backend.local/',
             paramsFormat:'json',
@@ -228,7 +303,7 @@
             mode:'cors',
             verbs: ['get','post','put','patch','delete']
         });
-        */
+        
         
         /*
         //Zorg dat het in juiste volgorde opgevraagd / afgebeeld word 
@@ -248,7 +323,7 @@
 
             commands: { 
             /*
-                addkanban: function (form, values) {
+                additem: function (form, values) {
                     //Geef hoogste volgorde waarde
 
                     if (values.newItem.trim()) {
@@ -331,6 +406,58 @@
             },
             view: {
                 kanban: [
+                {
+                    listtitle: 'Todo en een hele lange titel test test test test test test test',
+                    items: [
+                        {
+                            title: 'Een todo item',
+                            description: 'Een langere omschrijving'
+                        },
+                        {
+                            title: 'Nog een todo item',
+                            description: 'Een langere omschrijving'
+                        },
+                        {
+                            title: 'Nog een todo item',
+                            description: 'Een langere omschrijving'
+                        },
+                        {
+                            title: 'Nog een todo item',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                },
+                {
+                    listtitle: 'Doing',
+                    items: [
+                        {
+                            title: 'Een todo item waar aan gewerkt wordt',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                },
+                {
+                    listtitle: 'Todo en een hele lange titel test test test test test test test',
+                    items: [
+                        {
+                            title: 'Een todo item',
+                            description: 'Een langere omschrijving'
+                        },
+                        {
+                            title: 'Nog een todo item',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                },
+                {
+                    listtitle: 'Doing',
+                    items: [
+                        {
+                            title: 'Een todo item waar aan gewerkt wordt',
+                            description: 'Een langere omschrijving'
+                        }
+                    ]
+                },
                 {
                     listtitle: 'Todo en een hele lange titel test test test test test test test',
                     items: [
