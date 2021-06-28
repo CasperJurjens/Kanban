@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -243,6 +243,7 @@
                                     <div id="listmenucontent" class="menucontent">
                                         <button class="dellist" data-simply-command="dellist"> del list </button>
                                         <button class="additem" data-simply-command=""> add note </button>
+                                        <button class="emptydebug" data-simply-command="empty"> oi, click 'ere to empty ye</button>
                                     </div>
                                 </div>
                             </div>
@@ -341,6 +342,7 @@
     
 
     <script>
+        
         const api = simply.api.proxy({
             baseURL:'http://backend.local/',
             paramsFormat:'json',
@@ -358,12 +360,18 @@
             });
             console.log(Object.values(node.nodes));
         });
+        
 
-           
         var kanbanApp = simply.app({
 
             commands: { 
-            
+                empty: function (ele, value) {
+                    var delPathUncut = ele.closest('li').querySelector('.pathInput').value;
+                    var delPath = delPathUncut.replace('/', '');
+                    api[delPath].patch({delPath : ''}).then( function(response){
+                        console.log('I empty yes');
+                    });
+                },
                 additem: function (form, values) {
                     //Geef hoogste volgorde waarde
                     var targList = form.closest('li').parentElement.parentElement;
@@ -379,30 +387,29 @@
                         }
 
                         var kanbanItem = {
-                            items: {
-                                item: values.newItem.trim(),
-                                order: orderNum
-                            }
+                            item: values.newItem.trim(),
+                            order: orderNum
+                            
                         };
                         var path = targList.querySelector('.pathInput').value;
                         
-                        api[path].patch(kanbanItem).then(function (response) {
+                        api[path].data.items.post(kanbanItem).then(function (response) {
                             console.log(response);
                             
-                            /*path = response.replace('/', '');*/
-                            return api[path].items[orderNum - 1].get();
+                            
+                            return api[path].data.items[orderNum - 1].get();
                             
                         }).then(function (response) { 
                             console.log(response); 
                             kanbanApp.view.kanban[listIndex].items.push(response.node); 
                             console.log(kanbanApp.view.kanban);
                         });
+                        
                     }
                     form.newItem.value = '';
 
                 },
                 addlist: function (form, values) {
-                    //Geef hoogste volgorde waarde
 
                     if (values.newList.trim()) {
                         var orderNum = 1;
@@ -428,7 +435,6 @@
                     form.newList.value = '';
 
                 },
-                
                 dellist: function (el, value) {
                     var delPathUncut = el.closest('li').querySelector('.pathInput').value;
                     //var delPathUncut = el.parentElement.parentElement.parentElement.parentElement.querySelector('.pathInput').value
@@ -487,7 +493,78 @@
                 */
             },
             view: {
-                /*
+                /* 
+                (function() {
+                    var data = localStorage.getItem('simplyKanban');
+                    if (!data) {
+                        data = '[]';
+                    }
+                    var lists = JSON.parse(data) || [];
+                    return {
+                        kanban: lists,
+                        count: lists.length
+                    };
+                })()
+                */    
+            }
+            
+            
+            
+        });
+        
+
+
+        
+        // 3: update the counter whenever the list changes
+        document.addEventListener('simply-data-changed', function(evt) {
+            if (evt.data.arguments[0] == 'kanban') {
+                if (kanbanApp.view.kanban.length != null) {
+                    kanbanApp.view.count = kanbanApp.view.kanban.length;
+                } else {
+                    kanbanApp.view.count = 0;
+                }
+            }
+        });
+
+        // 6: drag and drop items to reorder them
+        /*
+        var kanbanList = document.querySelector('ul.kanban-list');
+        
+        kanbanList.addEventListener('slip:reorder', function (e) {
+            e.target.parentNode.insertBefore(e.target, e.detail.insertBefore);
+            
+            if (kanbanApp.view.kanban.length != 0) {
+                kanbanApp.view.kanban.forEach(function (item, index) {
+                    api[item.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
+                    item.data.order = index + 1;
+                }
+                )
+            }
+            
+            console.log(kanbanApp.view.kanban);
+        });
+
+        // 7: swipe to remove an item
+        kanbanList.addEventListener('slip:swipe', function(e) {
+            var delItem = e.target;
+            //delItem.parentNode.removeChild(delItem);      //Eerst parent en dan weer child is toch onnodige extra stap?
+            delItem.remove();
+            var delPathUncut = delItem.closest('li').querySelector('.pathInput').value;
+            var delPath = delPathUncut.replace('/', '');
+            api[delPath].delete().then(function (response) { console.log(response); });
+        });
+
+        new Slip(kanbanList);
+        */
+
+
+
+
+
+
+
+
+        /*
                 kanban: [
                 {
                     listtitle: 'Todo en een hele lange titel test test test test test test test',
@@ -587,81 +664,6 @@
                                
                 ]
                 */
-            }
-            
-            
-        });
-        /*
-        kanbanApp.view.kanban = [
-            {
-                listtitle: 'Todo',
-                items: [
-                    {
-                        title: 'Een todo item',
-                        description: 'Een langere omschrijving'
-                    },
-                    {
-                        title: 'Nog een todo item',
-                        description: 'Een langere omschrijving'
-                    }
-                ]
-            },
-            {
-                listtitle: 'Doing',
-                items: [
-                    {
-                        title: 'Een todo item waar aan gewerkt wordt',
-                        description: 'Een langere omschrijving'
-                    }
-                ]
-            }
-        ];
-        */
-        
-
-
-        /*
-        // 3: update the counter whenever the list changes
-        document.addEventListener('simply-data-changed', function(evt) {
-            if (evt.data.arguments[0] == 'kanban') {
-                if (kanbanApp.view.kanban.length != null) {
-                    kanbanApp.view.count = kanbanApp.view.kanban.length;
-                } else {
-                    kanbanApp.view.count = 0;
-                }
-            }
-        });
-
-        // 6: drag and drop items to reorder them
-        var kanbanList = document.querySelector('ul.kanban-list');
-        
-        kanbanList.addEventListener('slip:reorder', function (e) {
-            e.target.parentNode.insertBefore(e.target, e.detail.insertBefore);
-            
-            if (kanbanApp.view.kanban.length != 0) {
-                kanbanApp.view.kanban.forEach(function (item, index) {
-                    api[item.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
-                    item.data.order = index + 1;
-                }
-                )
-            }
-            
-            console.log(kanbanApp.view.kanban);
-        });
-
-        // 7: swipe to remove an item
-        kanbanList.addEventListener('slip:swipe', function(e) {
-            var delItem = e.target;
-            //delItem.parentNode.removeChild(delItem);      //Eerst parent en dan weer child is toch onnodige extra stap?
-            delItem.remove();
-            var delPathUncut = delItem.closest('li').querySelector('.pathInput').value;
-            var delPath = delPathUncut.replace('/', '');
-            api[delPath].delete().then(function (response) { console.log(response); });
-        });
-
-        new Slip(kanbanList);
-        */
-
     </script>
 </body>
 </html>
