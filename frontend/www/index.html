@@ -380,7 +380,7 @@
 
                     if (values.newItem.trim()) {
                         var orderNum = 1;
-                        if (kanbanApp.view.kanban[listIndex].length != null) { //Index nodig
+                        if (kanbanApp.view.kanban[listIndex].items.length != null) { //Index nodig
                             orderNum = kanbanApp.view.kanban[listIndex].items.length + 1;
                         } else {
                             orderNum = 1 ;
@@ -389,19 +389,16 @@
                         var kanbanItem = {
                             item: values.newItem.trim(),
                             order: orderNum
-                            
                         };
                         var path = targList.querySelector('.pathInput').value;
                         
                         api[path].data.items.post(kanbanItem).then(function (response) {
                             console.log(response);
-                            
-                            
                             return api[path].data.items[orderNum - 1].get();
-                            
+
                         }).then(function (response) { 
                             console.log(response); 
-                            kanbanApp.view.kanban[listIndex].items.push(response.node); 
+                            kanbanApp.view.kanban[listIndex].items.push(response.nodes); 
                             console.log(kanbanApp.view.kanban);
                         });
                         
@@ -458,7 +455,6 @@
                 editkanban: function (ele, value) {
                     var itemLiPre = ele.closest('li');
                     var input = itemLiPre.querySelector('input[type="text"]');
-
                     itemLiPre.classList.add('editing');
                     input.focus();
                     
@@ -543,7 +539,6 @@
             
             console.log(kanbanApp.view.kanban);
         });
-
         // 7: swipe to remove an item
         kanbanList.addEventListener('slip:swipe', function(e) {
             var delItem = e.target;
@@ -553,7 +548,6 @@
             var delPath = delPathUncut.replace('/', '');
             api[delPath].delete().then(function (response) { console.log(response); });
         });
-
         new Slip(kanbanList);
         */
 
