@@ -90,19 +90,18 @@
             flex-direction: row;
             flex-wrap: nowrap;
             list-style: none;
-                        
         }
         .addlistcontainer {
             position: relative;
+            height: 100%;
             order: 10000;
-            flex-shrink: 0;
+            
             align-content: flex-start;            
             list-style: none;
             flex-wrap: nowrap;
-            flex-grow: initial;
             background-color: #fafafa5d;
             width: 20em;
-            height: fit-content;
+            
             padding: 4px;
             margin: 10px;
             border-radius: 4%;
@@ -110,12 +109,14 @@
         .list {
             position: relative;
             width: 20em;
-            height: fit-content;
+            
+            height: 100%;
             padding: 4px;
             margin: 10px;
             border-radius: 4%;
             list-style: none;
             background-color: #fafafa5d;
+            cursor: pointer;
         }
         .items {
             display: flex;
@@ -140,6 +141,7 @@
             padding: 5px;
             box-shadow: 1px 1px 3px #5e5e5e8e;
             margin: 6px;
+            cursor: pointer;
         }
         .listtitle {
             min-height: 20px;
@@ -159,6 +161,7 @@
             padding: 5px 6px 7px 30px;
         }
         #listmenu.menu {
+            
             border-radius: 4px;
             background: linear-gradient(to right, #869e5f00, #c9e49e 10px);
         }
@@ -172,30 +175,49 @@
             vertical-align: top;
             z-index: -1;
         }
-        
         .menu:hover .menucontent{
             display: inline-block;
         }
         .menu:hover .teaser{
             display: none;
         }
-        input.edit {
+        
+
+        input.itemedit {
             display: none;
         }
+        .item.editing input.itemedit {
+            display: block;
+        }
+        .item.editing div.itemtitle, .item.editing div.itemdescription{
+            display: none;
+        }
+
+        input.listedit {
+            display: none;
+        }
+        .list.editing input.listedit {
+            display: block;
+        }
+        .list.editing h1.listtitle {
+            display: none;
+        }
+
+        /*
         li.editing input.edit {
                 display: block;
-                /*
-                width: 506px;
-                padding: 13px 17px 12px 17px;
-                margin: 0 0 0 43px;
-                */
-            }
+        }
         li.editing div.text {
             display: none;
         }
             .todo-list li.editing .view {
                 display: none;
             }
+        .list.editing input.listedit {
+            display: block;
+        }
+        */
+        
         .refer-back {
             text-align: center;
             margin: 5em; 
@@ -205,7 +227,10 @@
         }
         
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slipjs/2.0.0/slip.min.js"></script> 
+    
+    
 </head>
 <body>
     <section class="kanbanApp">
@@ -232,12 +257,13 @@
                             <input class="pathInput" data-simply-field="path" /> <!-- type="hidden" -->
                             <div class="head">
                                 <h1 class="listtitle" data-simply-field="listtitle">List Title</h1>
+                                <input class="listedit" name="editlisttitle" data-simply-field="listtitle" type="text">
                                 <div id="listmenu" class="menu">
                                     <a href="#" class="teaser">≡</a>
                                     <div id="listmenucontent" class="menucontent">
                                         <button class="dellist" data-simply-command="dellist"> del list </button>
-                                        <button class="additem" data-simply-command=""> add note </button>
-                                        <button class="emptydebug" data-simply-command="empty"> oi, click 'ere to empty ye</button>
+                                        <button class="editlist" data-simply-command="editlist"> edit list </button>
+                                        <!-- <button class="emptydebug" data-simply-command="empty"> oi, click 'ere to empty ye</button> -->
                                     </div>
                                 </div>
                             </div>
@@ -251,18 +277,18 @@
                                             <div id="itemmenucontent" class="menucontent">
                                                 <button class="delitem" data-simply-command="delitem"> del item </button>
                                                 <button class="edititem" data-simply-command="edititem"> edit </button>
-                                                <button class="colitem" data-simply-command=""> collapse </button>
+                                                <!-- <button class="colitem" data-simply-command=""> collapse </button> -->
                                             </div>
                                         </div>
                                         <span class="itemorder" data-simply-field="order">0</span>
-                                        <div class="text" data-simply-field="title">
+                                        <div class="itemtitle" data-simply-field="title">
                                             title
                                         </div>
-                                        <form class="edit">
-                                            <input class="edit" name="edittitle" data-simply-field="title" type="text"> <!-- data-simply-command="showTodo" -->
-                                            <input class="edit" name="editdescription" data-simply-field="description" type="text">
+                                        <form class="itemedit">
+                                            <input class="itemedit" name="edittitle" data-simply-field="title" type="text"> <!-- data-simply-command="showTodo" -->
+                                            <input class="itemedit" name="editdescription" data-simply-field="description" type="text">
                                         </form>
-                                        <div class="text" data-simply-field="description">
+                                        <div class="itemdescription" data-simply-field="description">
                                             Description
                                         </div>
                                         
@@ -294,52 +320,10 @@
     </section>
     <p class="refer-back">This example is part of <a href="https://simplyedit.io/examples/" target="_blank">simplyedit.io/examples/</a>
 
-
-
-
-
-
-    <!--
-    <section class="kanbanapp">
-        <div>
-            <header class="header">
-                <h1>kanbans</h1>
-                <form id="form" data-simply-command="addkanban">
-                    <input class="new-kanban" type="text" name="newItem" placeholder="What needs to be done?">
-                </form>
-            </header>
-            <section class="main">
-                <ul class="kanban-list" data-simply-list="kanban">                                                  Hier herkent ie de view.kanban 
-                    <template>
-                        <li>
-                            <span data-simply-field="data.order">0</span>
-                            <input class="pathInput" data-simply-field="path" type="hidden" />
-                            <input type="checkbox" class="toggle" data-simply-field="completed" value="1">
-                            <div class="view">
-                                <label data-simply-field="data.item">Item</label>
-                                <button class="edit" data-simply-command="editkanban"></button>
-                                <button class="destroy" data-simply-command="delkanban"></button>
-                            </div>
-                            <input class="edit" data-simply-field="data.item" type="text">                  data-simply-command="showkanban" 
-                        </li>
-                    </template>
-                </ul>
-            </section>
-            <footer class="footer">
-                <span class="kanban-count" data-simply-field="count" data-simply-content="template" data-simply-default-template="other">
-                    Nothing left kanban!                                                                                                      Dit doet het niet tijdens eerste keer laden v pagina
-                    <template data-simply-template="0">Nothing left kanban!</template>
-                    <template data-simply-template="1"><strong>1</strong> item left</template>
-                    <template data-simply-template="other"><strong data-simply-field="count">n</strong> items left</template>
-                </span>
-            </footer>
-        </div>
-    </section>
--->
-
-
+        <script src='https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.js'></script>
     <script src="https://unpkg.com/simplyview@2.0.1/dist/simply.everything.js"></script>
     <script src="https://cdn.simplyedit.io/1/simply-edit.js"></script>
+    
     
 
     <script>
@@ -480,98 +464,89 @@
                         )
                     }
                 },
-                
+
+                editlist: function (ele, value) {
+                    var listPre = ele.closest('li');
+                    var inputTitle = listPre.querySelector('input[name="editlisttitle"]');
+                    console.log('ah die titeltje: ' + inputTitle.value);
+                    listPre.classList.add('editing');
+                    inputTitle.focus();
+
+                    inputTitle.addEventListener('blur', function () {    
+                        console.log('listtitle blur');
+                        inputTitle.removeEventListener('keyup', keyEscape);
+                        kanbanApp.commands.call('showlist', inputTitle, listPre);
+                    });
+                    
+                    var keyEscape = function(evt) {
+                        if (["Escape","Cancel"].indexOf(evt.key)!=-1) {
+                            //input.value = itemLiPre.querySelector('label[data-simply-field="data.item"]').innerHTML;
+                            inputTitle.value = listPre.querySelector('div[data-simply-field="listtitle"]').innerHTML;
+                        }
+                        if (["Escape","Cancel","Enter"].indexOf(evt.key)!=-1) {
+                            kanbanApp.commands.call('showlist', inputTitle, listPre);
+                        }
+                    };
+                    inputTitle.addEventListener('keyup', keyEscape);
+                },
+
+                showlist: function(title, list) {
+                    title.closest('li').classList.remove('editing');
+                    title.blur();
+
+                    var listOrder = list.querySelector('.listorder').innerHTML;
+                    var listItems = kanbanApp.view.kanban[listOrder - 1].items;
+                    console.log('title = ');
+                    console.log(title);
+                    console.log('list = ' + list);
+
+                    //var patchPathUncut = list.querySelector('.pathInput').value;                   //Krijg hier een error, maar het werkt wel...
+                    //var patchPath = patchPathUncut.replace('/', '');
+                    var patchList = {
+                        listtitle: title.value,
+                        items: listItems,
+                        order: listOrder
+                    };
+                    console.log(patchList);
+                    kanbanApp.view.kanban[listOrder - 1] = patchList;
+                    //api[patchPath].patch(patchItem).then(function (response) { console.log('patch response: ' + response); }); //Test database update
+                },
+
                 edititem: function (ele, value) {
                     var itemLiPre = ele.closest('li');
-                    var inputForm = itemLiPre.querySelector('form[class="edit"]');
+                    var inputForm = itemLiPre.querySelector('form[class="itemedit"]');
                     var inputTitle = inputForm.querySelector('input[name="edittitle"]');
                     var inputDescription = inputForm.querySelector('input[name="editdescription"]');
 
                     itemLiPre.classList.add('editing');
                     inputTitle.focus();
-                    /*
-                    document.addEventListener('click', function() {
-                        if(t in de juiste plek dan goed)
-                    });
-*/
+
                     inputForm.addEventListener('focusout', function () {
-                        
-                        console.log('blur');
-                        //if(!inputTitle.addEventListener('focus', function() {return titleFocus = true;}) && !inputDescription.addEventListener('focus', function() {return descFocus = true;})) {
-                        if(inputTitle === document.activeElement || inputDescription === document.activeElement) { 
-                            inputForm.removeEventListener('keyup', keyEscape);
-                            kanbanApp.commands.call('showkanban', inputTitle, inputDescription, itemLiPre);
-                        }
-                    }, 10);
+                        setTimeout(function() {
+                            console.log('blur');
+                            //if(!inputTitle.addEventListener('focus', function() {return titleFocus = true;}) && !inputDescription.addEventListener('focus', function() {return descFocus = true;})) {
+                            if(inputTitle !== document.activeElement && inputDescription !== document.activeElement) { 
+                                console.log('daadwerkelijke blur');
+                                inputForm.removeEventListener('keyup', keyEscape);
+                                kanbanApp.commands.call('showitem', inputTitle, inputDescription, itemLiPre);
+                            }
+                        }, 100);
+                    });
                     
                     var keyEscape = function(evt) {
                         if (["Escape","Cancel"].indexOf(evt.key)!=-1) {
                             //input.value = itemLiPre.querySelector('label[data-simply-field="data.item"]').innerHTML;
-                            inputTitle.value = itemLiPre.querySelector('label[data-simply-field="title"]').innerHTML;
-                            inputDescription.value = itemLiPre.querySelector('label[data-simply-field="description"]').innerHTML;
+                            inputTitle.value = itemLiPre.querySelector('div[data-simply-field="title"]').innerHTML;
+                            inputDescription.value = itemLiPre.querySelector('div[data-simply-field="description"]').innerHTML;
                         }
                         if (["Escape","Cancel","Enter"].indexOf(evt.key)!=-1) {
-                            kanbanApp.commands.call('showkanban', inputTitle, inputDescription, itemLiPre);
+                            kanbanApp.commands.call('showitem', inputTitle, inputDescription, itemLiPre);
                         }
                     };
                     inputForm.addEventListener('keyup', keyEscape);
                 },
-                /*
-                edititem: function (ele, value) {
-                    var itemLiPre = ele.closest('li');
-                    var inputTitle = itemLiPre.querySelector('input[name="edittitle"]');
-                    var inputDescription = itemLiPre.querySelector('input[name="editdescription"]');
-                    console.log('description1 = ');
-                    console.log(inputDescription);
-                    itemLiPre.classList.add('editing');
-                    inputTitle.focus();
-                    
-                    var titleBlur = false;
-                    var descBlur = false;
-                    var descFocus = function() {descBlur = false; console.log('focussed on description')};
-                    var titleFocus = function() {titleBlur = false; console.log('focussed on title')};
 
-                    inputTitle.addEventListener('blur', function () {
-                        titleBlur = true;
-                        console.log('titleBlur = ' + titleBlur);
-                        inputDescription.addEventListener('focus', titleFocus);
-                        inputTitle.removeEventListener('keyup', keyEscape);
-                        //kanbanApp.commands.call('showkanban', inputTitle, itemLiPre);
-                        if(titleBlur && descBlur) {
-                            inputTitle.removeEventListener('focus', titleFocus);
-                            inputDescription.removeEventListener('focus', descFocus);
-                            kanbanApp.commands.call('showkanban', inputTitle, inputDescription, itemLiPre);
-                        }
-                    });
-                    
-                    inputDescription.addEventListener('blur', function () {
-                        descBlur = true;
-                        console.log('descBlur = ' + descBlur);
-                        inputDescription.addEventListener('focus', descFocus);
-                        inputDescription.removeEventListener('keyup', keyEscape);
-                        //kanbanApp.commands.call('showkanban', inputDescription, itemLiPre);
-                        if(titleBlur && descBlur) {
-                            inputTitle.removeEventListener('focus', titleFocus);
-                            inputDescription.removeEventListener('focus', descFocus);
-                            kanbanApp.commands.call('showkanban', inputTitle, inputDescription, itemLiPre);
-                        }
-                    });
-
-                    var keyEscape = function(evt) {
-                        if (["Escape","Cancel"].indexOf(evt.key)!=-1) {
-                            inputTitle.value = itemLiPre.querySelector('label[data-simply-field="title"]').innerHTML;
-                            inputDescription.value = itemLiPre.querySelector('label[data-simply-field="description"]').innerHTML;
-                        }
-                        if (["Escape","Cancel","Enter"].indexOf(evt.key)!=-1) {
-                            kanbanApp.commands.call('showkanban', inputTitle, inputDescription, itemLiPre);
-                        }
-                    };
-                    inputTitle.addEventListener('keyup', keyEscape);
-                    inputDescription.addEventListener('keyup', keyEscape);
-                },
-                */
-                
-                showkanban: function(title, description, itemLi, value) {
+                showitem: function(title, description, itemLi, value) {
                     title.closest('li').classList.remove('editing');
                     title.blur();
 
@@ -593,23 +568,89 @@
                     kanbanApp.view.kanban[listOrder - 1].items[itemOrder - 1] = patchItem;
                     //api[patchPath].patch(patchItem).then(function (response) { console.log('patch response: ' + response); }); //Test database update
                 }
+                /*
+                edititem: function (ele, value) {
+                    var itemLiPre = ele.closest('li');
+                    var inputTitle = itemLiPre.querySelector('input[name="edittitle"]');
+                    var inputDescription = itemLiPre.querySelector('input[name="editdescription"]');
+                    console.log('description1 = ');
+                    console.log(inputDescription);
+                    itemLiPre.classList.add('editing');
+                    inputTitle.focus();
+                    
+                    var titleBlur = false;
+                    var descBlur = false;
+                    var descFocus = function() {descBlur = false; console.log('focussed on description')};
+                    var titleFocus = function() {titleBlur = false; console.log('focussed on title')};
+
+                    inputTitle.addEventListener('blur', function () {
+                        titleBlur = true;
+                        console.log('titleBlur = ' + titleBlur);
+                        inputDescription.addEventListener('focus', titleFocus);
+                        inputTitle.removeEventListener('keyup', keyEscape);
+                        //kanbanApp.commands.call('showitem', inputTitle, itemLiPre);
+                        if(titleBlur && descBlur) {
+                            inputTitle.removeEventListener('focus', titleFocus);
+                            inputDescription.removeEventListener('focus', descFocus);
+                            kanbanApp.commands.call('showitem', inputTitle, inputDescription, itemLiPre);
+                        }
+                    });
+                    
+                    inputDescription.addEventListener('blur', function () {
+                        descBlur = true;
+                        console.log('descBlur = ' + descBlur);
+                        inputDescription.addEventListener('focus', descFocus);
+                        inputDescription.removeEventListener('keyup', keyEscape);
+                        //kanbanApp.commands.call('showitem', inputDescription, itemLiPre);
+                        if(titleBlur && descBlur) {
+                            inputTitle.removeEventListener('focus', titleFocus);
+                            inputDescription.removeEventListener('focus', descFocus);
+                            kanbanApp.commands.call('showitem', inputTitle, inputDescription, itemLiPre);
+                        }
+                    });
+
+                    var keyEscape = function(evt) {
+                        if (["Escape","Cancel"].indexOf(evt.key)!=-1) {
+                            inputTitle.value = itemLiPre.querySelector('label[data-simply-field="title"]').innerHTML;
+                            inputDescription.value = itemLiPre.querySelector('label[data-simply-field="description"]').innerHTML;
+                        }
+                        if (["Escape","Cancel","Enter"].indexOf(evt.key)!=-1) {
+                            kanbanApp.commands.call('showitem', inputTitle, inputDescription, itemLiPre);
+                        }
+                    };
+                    inputTitle.addEventListener('keyup', keyEscape);
+                    inputDescription.addEventListener('keyup', keyEscape);
+                },
+                */
+                
+                
                 
             },
             view: (function() {
                 var data = localStorage.getItem('simplyKanban');
+                
                 if (!data) {
                     data = '[]';
                 }
                 var lists = JSON.parse(data) || [];
+
+                console.log('init');
+                    dragula([document.querySelector(".lists")]);
+
                 return {
                     kanban: lists,
                     count: lists.length
                 };
+                
+                
+                //(function init() {
+                    
+               // })();
             })() 
         });
         
 
-
+        
         
         // 3: update the counter whenever the list changes
         document.addEventListener('simply-data-changed', function(evt) {
