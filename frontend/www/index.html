@@ -15,6 +15,9 @@
         }
         */
         
+
+
+        
         html {
             /*font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/ /* normaal*/
             /*font-family: f-barlow, sans-serif;*/ /*normaal*/
@@ -203,6 +206,9 @@
             display: none;
         }
 
+
+
+
         /*
         li.editing input.edit {
                 display: block;
@@ -228,10 +234,8 @@
         
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slipjs/2.0.0/slip.min.js"></script> 
-    
-    
 </head>
+
 <body>
     <section class="kanbanApp">
         <div>
@@ -250,7 +254,7 @@
             </div>
             
             <section class="main">
-                <ul class="lists" data-simply-list="kanban">
+                <ul class="lists" data-simply-list="kanban" dragula='"bag-one"'>
                     <template>
                         <li class="list">
                             <span class="listorder" data-simply-field="order">0</span>
@@ -320,14 +324,13 @@
     </section>
     <p class="refer-back">This example is part of <a href="https://simplyedit.io/examples/" target="_blank">simplyedit.io/examples/</a>
 
-        <script src='https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.js'></script>
+    
+    
+    <script src='https://cdn.jsdelivr.net/gh/bevacqua/dragula@3.7.3/dist/dragula.min.js'></script>
     <script src="https://unpkg.com/simplyview@2.0.1/dist/simply.everything.js"></script>
     <script src="https://cdn.simplyedit.io/1/simply-edit.js"></script>
     
-    
-
     <script>
-        
         const api = simply.api.proxy({
             baseURL:'http://backend.local/',
             paramsFormat:'json',
@@ -382,7 +385,7 @@
 
                     form.newList.value = '';
                 },
-
+                
                 additem: function (form, values) {
                     //Geef hoogste volgorde waarde
                     var targList = form.closest('li').parentElement.parentElement;
@@ -634,8 +637,30 @@
                 }
                 var lists = JSON.parse(data) || [];
 
-                console.log('init');
-                    dragula([document.querySelector(".lists")]);
+                function init() {
+                    console.log('init');
+                    console.log(document.querySelector(".lists"));
+                    dragula([document.querySelector(".lists")], {direction: 'horizontal', copy: false, copySortSource: true})
+                    .on('drag', function(el) {
+                        console.log('draggin');
+                        console.log(el);
+
+                        const stopBindingEv = new Event('databinding:pause');
+                        listsEl = document.querySelector('.lists');
+                        listsEl.dispatchEvent(stopBindingEv);
+                    }).on('drop', function(el) {
+                        console.log('droppin');
+                        console.log(el);
+
+                        const resumeBindingEv = new Event('databinding:resume'); 
+                        const dataChangeEv = new Event('databinding:valuechanged');
+                        listsEl = document.querySelector('.lists');
+                        listsEl.dispatchEvent(resumeBindingEv);
+                        listsEl.dispatchEvent(dataChangeEv);
+                    });
+                    
+                };
+                init();
 
                 return {
                     kanban: lists,
@@ -653,9 +678,17 @@
         
         
         // 3: update the counter whenever the list changes
+        
         document.addEventListener('simply-data-changed', function(evt) {
             if (evt.data.arguments[0] == 'kanban') {
                 if (kanbanApp.view.kanban.length != null) {
+                    if (kanbanApp.view.kanban.length != 0) {
+                        kanbanApp.view.kanban.forEach(function (list, index) {
+                            //api[list.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
+                            //kanbanApp.view.kanban[index].order = index + 1;
+                            list.order = index + 1;
+                        });
+                    }
                     kanbanApp.view.count = kanbanApp.view.kanban.length;
                 } else {
                     kanbanApp.view.count = 0;
@@ -665,7 +698,11 @@
             localStorage.setItem('simplyKanban', JSON.stringify(kanbanApp.view.kanban));
             console.log({localStorage});
         });
+        
 
+        
+            
+        
         // 6: drag and drop items to reorder them
         /*
         var kanbanList = document.querySelector('ul.kanban-list');
@@ -683,6 +720,10 @@
             
             console.log(kanbanApp.view.kanban);
         });
+        
+        
+        
+        /*
         // 7: swipe to remove an item
         kanbanList.addEventListener('slip:swipe', function(e) {
             var delItem = e.target;
