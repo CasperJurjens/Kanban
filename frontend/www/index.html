@@ -146,6 +146,10 @@
             margin: 6px;
             cursor: pointer;
         }
+        .item:hover {
+            background-color: #ddd3d3;
+            box-shadow: 2px 2px 4px #3a3a3a8e;
+        }
         .listtitle {
             min-height: 20px;
             overflow :hidden;
@@ -639,8 +643,57 @@
 
                 function init() {
                     console.log('init');
-                    console.log(document.querySelector(".lists"));
-                    dragula([document.querySelector(".lists")], {direction: 'horizontal', copy: false, copySortSource: true})
+                    console.log(document.querySelectorAll(".items"));
+                    
+                    //dragula([
+                        //function() {
+                            
+                    let items = document.querySelectorAll(".items");
+                    items.forEach(function(itemList, index) {
+                        dragula([itemList]);
+                    }); 
+
+                    /*
+                    console.log('items: ');
+                    console.log(items);
+                    for(i = 0; i < items.length; i++) {
+                        console.log('buh buh buh');
+                    }
+                    items.forEach(function(){console.log('sdfjdhg')});
+                         
+                            //[].forEach.call(items, function(itemList) {
+                             //   console.log('test');
+                             //   console.log(itemsList);
+                                //return {
+                                //    itemsList
+                                //}
+                            //});
+                            /*
+                            items.forEach(function(itemsList) {
+                                console.log('test');
+                                console.log(itemsList);
+                                return {
+                                    itemsList
+                                }
+                            })
+                            */
+                        //}
+                //]);
+
+
+                    lists = document.querySelector(".lists")
+                    
+                    dragula([lists], {
+                        direction: 'horizontal', 
+                        copy: false, 
+                        copySortSource: true,
+                        moves: function(el, source, handle, sibling) {
+                            //if(items.)
+                            //if(items.addEventListener('mousedown', function(){
+
+                            //}))
+                        }
+                    })
                     .on('drag', function(el) {
                         console.log('draggin');
                         console.log(el);
@@ -660,7 +713,8 @@
                     });
                     
                 };
-                init();
+                setTimeout(function(){init()}, 100);
+                //init();
 
                 return {
                     kanban: lists,
@@ -682,13 +736,15 @@
         document.addEventListener('simply-data-changed', function(evt) {
             if (evt.data.arguments[0] == 'kanban') {
                 if (kanbanApp.view.kanban.length != null) {
-                    if (kanbanApp.view.kanban.length != 0) {
-                        kanbanApp.view.kanban.forEach(function (list, index) {
-                            //api[list.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
-                            //kanbanApp.view.kanban[index].order = index + 1;
-                            list.order = index + 1;
+                    kanbanApp.view.kanban.forEach(function (list, index) {
+                        kanbanApp.view.kanban[index].items.forEach(function(item, ItemIndex) {
+                            item.order = ItemIndex + 1;
                         });
-                    }
+                        //api[list.path.replace('/', '')].patch({ order: index + 1 }).then(function (response) { console.log(response); });      //Zorgt voor error maar doet het wel
+                        //kanbanApp.view.kanban[index].order = index + 1;
+                        list.order = index + 1;
+                    });
+                    
                     kanbanApp.view.count = kanbanApp.view.kanban.length;
                 } else {
                     kanbanApp.view.count = 0;
